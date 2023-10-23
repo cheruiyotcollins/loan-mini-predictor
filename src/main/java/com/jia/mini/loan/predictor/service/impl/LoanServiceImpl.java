@@ -114,7 +114,6 @@ public class LoanServiceImpl extends Thread implements LoanService  {
             return new ResponseEntity<>(responseDto, responseDto.getStatus());
         }
     }
-
     private Loan loanMapper(LoanApplicationRequest loanApplicationRequest, double interestSum, double serviceFeeSum, LoanType loanType){
         Loan loan = Loan.builder()
                 .loanType(loanType)
@@ -144,8 +143,6 @@ public class LoanServiceImpl extends Thread implements LoanService  {
         return new ResponseEntity<>(responseDto, responseDto.getStatus());
 
     }
-
-
     @Override
     //listing all existing loans
     public ResponseEntity<List<Loan>> getLoans() {
