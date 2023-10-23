@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public class GeneralResponse {
+public class ResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object payload;
     @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -1,15 +1,12 @@
 package com.jia.mini.loan.predictor.service.impl;
 
 import com.jia.mini.loan.predictor.dto.CreateCustomerRequest;
-import com.jia.mini.loan.predictor.dto.GeneralResponse;
+import com.jia.mini.loan.predictor.dto.ResponseDto;
 import com.jia.mini.loan.predictor.entities.Customer;
 import com.jia.mini.loan.predictor.enums.CustomerCreditStatus;
 import com.jia.mini.loan.predictor.repository.CustomerRepository;
 import com.jia.mini.loan.predictor.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,11 +17,11 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CustomerRepository customerRepository;
-    GeneralResponse generalResponse;
+    ResponseDto responseDto;
     @Override
     //creating new customer
-    public ResponseEntity<GeneralResponse> addCustomer(CreateCustomerRequest createCustomerRequest) {
-        generalResponse = new GeneralResponse();
+    public ResponseEntity<ResponseDto> addCustomer(CreateCustomerRequest createCustomerRequest) {
+        responseDto = new ResponseDto();
         try {
             Customer customer = Customer.builder()
                     .customerMobileNo(createCustomerRequest.getCustomerMobileNo())
@@ -33,13 +30,13 @@ public class CustomerServiceImpl implements CustomerService {
                     .customerStatus(CustomerCreditStatus.valueOf(createCustomerRequest.getCustomerStatus()))
                     .build();
             customerRepository.save(customer);
-            generalResponse.setStatus(HttpStatus.CREATED);
-            generalResponse.setDescription("Customer Created Successfully");
+            responseDto.setStatus(HttpStatus.CREATED);
+            responseDto.setDescription("Customer Created Successfully");
         }catch (Exception e){
-            generalResponse.setDescription("Customer Not Created");
-            generalResponse.setStatus(HttpStatus.BAD_REQUEST);
+            responseDto.setDescription("Customer Not Created");
+            responseDto.setStatus(HttpStatus.BAD_REQUEST);
         }
-        return  new ResponseEntity<>(generalResponse, generalResponse.getStatus());
+        return  new ResponseEntity<>(responseDto, responseDto.getStatus());
     }
 
     @Override

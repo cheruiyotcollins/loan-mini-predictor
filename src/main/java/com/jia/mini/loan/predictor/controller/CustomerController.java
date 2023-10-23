@@ -1,11 +1,10 @@
 package com.jia.mini.loan.predictor.controller;
 
 import com.jia.mini.loan.predictor.dto.CreateCustomerRequest;
-import com.jia.mini.loan.predictor.dto.GeneralResponse;
+import com.jia.mini.loan.predictor.dto.ResponseDto;
 import com.jia.mini.loan.predictor.entities.Customer;
 import com.jia.mini.loan.predictor.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ public class CustomerController {
     CustomerService customerService;
     //adding new customer
     @PostMapping("add")
-    public ResponseEntity<GeneralResponse> addCustomer(@RequestBody CreateCustomerRequest createCustomerRequest){
+    public ResponseEntity<ResponseDto> addCustomer(@RequestBody CreateCustomerRequest createCustomerRequest){
 
       return customerService.addCustomer(createCustomerRequest);
     }

@@ -1,6 +1,6 @@
 package com.jia.mini.loan.predictor.service.impl;
 
-import com.jia.mini.loan.predictor.dto.GeneralResponse;
+import com.jia.mini.loan.predictor.dto.ResponseDto;
 import com.jia.mini.loan.predictor.dto.LoanInstallmentStoreRequest;
 import com.jia.mini.loan.predictor.entities.Loan;
 import com.jia.mini.loan.predictor.entities.LoanInstallment;
@@ -22,7 +22,7 @@ public class LoanInstallmentServiceImpl implements LoanInstallmentService {
     @Autowired
     LoanRepository loanRepository;
 
-    GeneralResponse generalResponse;
+    ResponseDto responseDto;
 
     @Override
     // Storing payable loan installments
@@ -41,20 +41,20 @@ public class LoanInstallmentServiceImpl implements LoanInstallmentService {
 
     @Override
     //getting payable loan installment fee by loan id
-    public ResponseEntity<GeneralResponse> getLoanInstallmentByLoanId(Long id) {
-        generalResponse=new GeneralResponse();
+    public ResponseEntity<ResponseDto> getLoanInstallmentByLoanId(Long id) {
+        responseDto =new ResponseDto();
         Optional<Loan> loan=loanRepository.findById(id);
         if(loan.isPresent()) {
             List<LoanInstallment> loanInstallments = loanInstallmentRepository.findByLoan(loanRepository.findById(id).get()).get();
-            generalResponse.setPayload(loanInstallments);
-            generalResponse.setStatus(HttpStatus.FOUND);
-            generalResponse.setDescription("Loan Installment List");
-            return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
+            responseDto.setPayload(loanInstallments);
+            responseDto.setStatus(HttpStatus.FOUND);
+            responseDto.setDescription("Loan Installment List");
+            return new ResponseEntity<>(responseDto, responseDto.getStatus());
 
         }else {
-            generalResponse.setStatus(HttpStatus.OK);
-            generalResponse.setDescription("Loan with provided id not found");
-            return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
+            responseDto.setStatus(HttpStatus.OK);
+            responseDto.setDescription("Loan with provided id not found");
+            return new ResponseEntity<>(responseDto, responseDto.getStatus());
 
         }
     }

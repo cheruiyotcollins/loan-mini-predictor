@@ -1,13 +1,12 @@
 package com.jia.mini.loan.predictor.service.impl;
 
-import com.jia.mini.loan.predictor.dto.GeneralResponse;
+import com.jia.mini.loan.predictor.dto.ResponseDto;
 import com.jia.mini.loan.predictor.dto.LoanApplicationRequest;
 import com.jia.mini.loan.predictor.dto.ProjectedFeesStoreRequest;
 import com.jia.mini.loan.predictor.entities.Loan;
 import com.jia.mini.loan.predictor.enums.LoanType;
 import com.jia.mini.loan.predictor.repository.CustomerRepository;
 import com.jia.mini.loan.predictor.repository.LoanRepository;
-import com.jia.mini.loan.predictor.service.CustomerService;
 import com.jia.mini.loan.predictor.service.LoanService;
 import com.jia.mini.loan.predictor.service.ProjectedFeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,19 +47,19 @@ public class LoanServiceImpl extends Thread implements LoanService  {
     @Autowired
     ProjectedFeeService projectedFeeService;
 
-    GeneralResponse generalResponse;
+    ResponseDto responseDto;
 
     @Override
     @Transactional
-    public ResponseEntity<GeneralResponse> addNewLoan(LoanApplicationRequest loanApplicationRequest) {
-        generalResponse=new GeneralResponse();
+    public ResponseEntity<ResponseDto> addNewLoan(LoanApplicationRequest loanApplicationRequest) {
+        responseDto =new ResponseDto();
         try {
             //processing weekly loan
+            int i = 0;
+            int j = 0;
             if (loanApplicationRequest.getLoanType().equalsIgnoreCase(weeklyLoan)) {
 
                 int noOfWeeks = loanApplicationRequest.getLoanDuration() / 7;
-                int i = 0;
-                int j = 0;
                 int startWeek = 1;
                 double[] weeklyInterest = new double[noOfWeeks];
                 double weeklyInterestSum = 0;
@@ -79,36 +76,13 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                     }
                     startWeek++;
                 }
-                Loan loan = Loan.builder()
-                        .loanType(LoanType.WEEKLY)
-                        .loanDuration(loanApplicationRequest.getLoanDuration())
-                        .interest(weeklyInterestSum)
-                        .disbursementDate(LocalDateTime.now().toString())
-                        .principalAmount(loanApplicationRequest.getPrincipalAmount())
-                        .serviceFee(weeklyServiceFeeSum)
-                        .totalRepayable(loanApplicationRequest.getPrincipalAmount() + weeklyServiceFeeSum + weeklyInterestSum)
-                        .customer(customerRepository.findById(loanApplicationRequest.getCustomerId()).get())
-                        .build();
-                Loan createdLoan = loanRepository.save(loan);
+                Loan newLoan = loanMapper(loanApplicationRequest,weeklyInterestSum,weeklyServiceFeeSum,LoanType.WEEKLY);
 
-                ProjectedFeesStoreRequest projectedFeesStoreRequest = ProjectedFeesStoreRequest.builder()
-                        .loanId(createdLoan.getId())
-                        .projectedInterestAmount(weeklyInterest)
-                        .projectedServiceFeeAmount(weeklyServiceFeeArray)
-                        .build();
-            //calling projectedFeeService Class to calculated and store projected fees
-                projectedFeeService.storeWeeklyProjectedFees(projectedFeesStoreRequest);
-                generalResponse.setStatus(HttpStatus.CREATED);
-                generalResponse.setPayload(createdLoan);
-                generalResponse.setDescription("Loan Created Successfully");
-                return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
-
+                return projectedFeeMapper(newLoan,weeklyInterest,weeklyServiceFeeArray);
             }
             //processing monthly loans
             else if (loanApplicationRequest.getLoanType().equalsIgnoreCase(monthlyLoan)) {
                 int noOfMonths = loanApplicationRequest.getLoanDuration() / 30;
-                int i = 0;
-                int j = 0;
                 int startMonth = 1;
                 double[] monthlyInterest = new double[noOfMonths];
                 double monthlyInterestSum = 0;
@@ -125,40 +99,50 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                     }
                     startMonth++;
                 }
-                Loan loan = Loan.builder()
-                        .loanType(LoanType.MONTHLY)
-                        .loanDuration(loanApplicationRequest.getLoanDuration())
-                        .interest(monthlyInterestSum)
-                        .disbursementDate(LocalDateTime.now().toString())
-                        .principalAmount(loanApplicationRequest.getPrincipalAmount())
-                        .serviceFee(monthlyServiceFeeSum)
-                        .totalRepayable(loanApplicationRequest.getPrincipalAmount() + monthlyInterestSum + monthlyServiceFeeSum)
-                        .customer(customerRepository.findById(loanApplicationRequest.getCustomerId()).get())
-                        .build();
-                Loan createdLoan = loanRepository.save(loan);
-
-                ProjectedFeesStoreRequest projectedFeesStoreRequest = ProjectedFeesStoreRequest.builder()
-                        .loanId(createdLoan.getId())
-                        .projectedInterestAmount(monthlyInterest)
-                        .projectedServiceFeeAmount(monthlyServiceFeeArray)
-                        .build();
-                 //calling projectedFeeService Class to calculated and store projected fees
-                projectedFeeService.storeMonthlyProjectedFees(projectedFeesStoreRequest);
-                generalResponse.setStatus(HttpStatus.CREATED);
-                generalResponse.setPayload(createdLoan);
-                generalResponse.setDescription("Loan Created Successfully");
-                return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
-            } //return invalid loan type for any other loan type
+                Loan newLoan = loanMapper(loanApplicationRequest,monthlyInterestSum,monthlyServiceFeeSum,LoanType.MONTHLY);
+                return projectedFeeMapper(newLoan,monthlyInterest,monthlyServiceFeeArray);
+            }
+            //return invalid loan type for any other loan type
             else {
-                generalResponse.setStatus(HttpStatus.BAD_REQUEST);
-                generalResponse.setDescription("Invalid Loan Type");
-                return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
+                responseDto.setStatus(HttpStatus.BAD_REQUEST);
+                responseDto.setDescription("Invalid Loan Type");
+                return new ResponseEntity<>(responseDto, responseDto.getStatus());
             }
         }catch (Exception e){
-            generalResponse.setDescription("Customer with provided id not found");
-            generalResponse.setStatus(HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(generalResponse,generalResponse.getStatus());
+            responseDto.setDescription("Customer with provided id not found");
+            responseDto.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(responseDto, responseDto.getStatus());
         }
+    }
+
+    private Loan loanMapper(LoanApplicationRequest loanApplicationRequest, double interestSum, double serviceFeeSum, LoanType loanType){
+        Loan loan = Loan.builder()
+                .loanType(loanType)
+                .loanDuration(loanApplicationRequest.getLoanDuration())
+                .interest(interestSum)
+                .disbursementDate(LocalDateTime.now().toString())
+                .principalAmount(loanApplicationRequest.getPrincipalAmount())
+                .serviceFee(serviceFeeSum)
+                .totalRepayable(loanApplicationRequest.getPrincipalAmount() + interestSum + serviceFeeSum)
+                .customer(customerRepository.findById(loanApplicationRequest.getCustomerId()).get())
+                .build();
+       return loanRepository.save(loan);
+    }
+
+    private ResponseEntity<ResponseDto> projectedFeeMapper(Loan loan, double[] interest, double[] serviceFee){
+
+        ProjectedFeesStoreRequest projectedFeesStoreRequest = ProjectedFeesStoreRequest.builder()
+                .loanId(loan.getId())
+                .projectedInterestAmount(interest)
+                .projectedServiceFeeAmount(serviceFee)
+                .build();
+        //calling projectedFeeService Class to calculated and store projected fees
+        projectedFeeService.storeMonthlyProjectedFees(projectedFeesStoreRequest);
+        responseDto.setStatus(HttpStatus.CREATED);
+        responseDto.setPayload(loan);
+        responseDto.setDescription("Loan Created Successfully");
+        return new ResponseEntity<>(responseDto, responseDto.getStatus());
+
     }
 
 
