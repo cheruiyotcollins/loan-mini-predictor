@@ -70,8 +70,12 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                     weeklyInterestSum += loanApplicationRequest.getPrincipalAmount() * weeklyLoanInterest / 100;
                     i++;
                     if (startWeek % 2 == 0) {
-                        weeklyServiceFeeArray[j] = loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
-                        weeklyServiceFeeSum += loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
+                        double serviceFeeCharge=loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
+                        if(serviceFeeCharge>weeklyCap){
+                            serviceFeeCharge=weeklyCap;
+                        }
+                        weeklyServiceFeeArray[j] = serviceFeeCharge;
+                        weeklyServiceFeeSum += serviceFeeCharge;
                         j++;
                     }
                     startWeek++;
@@ -93,8 +97,12 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                     monthlyInterestSum += loanApplicationRequest.getPrincipalAmount() * monthlyLoanInterest / 100;
                     i++;
                     if (startMonth % 3 == 0) {
-                        monthlyServiceFeeArray[j] = loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
-                        monthlyServiceFeeSum += loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
+                        double serviceFeeCharge=loanApplicationRequest.getPrincipalAmount() * serviceFee / 100;
+                        if(serviceFeeCharge>monthlyCap){
+                            serviceFeeCharge=monthlyCap;
+                        }
+                        monthlyServiceFeeArray[j] = serviceFeeCharge;
+                        monthlyServiceFeeSum += serviceFeeCharge;
                         j++;
                     }
                     startMonth++;

@@ -38,7 +38,6 @@ public class LoanInstallmentServiceImpl implements LoanInstallmentService {
         }
 
     }
-
     @Override
     //getting payable loan installment fee by loan id
     public ResponseEntity<ResponseDto> getLoanInstallmentByLoanId(Long id) {
