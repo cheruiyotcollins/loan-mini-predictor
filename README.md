@@ -1,0 +1,1 @@
+# loan-mini-predictor
