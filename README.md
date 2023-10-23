@@ -13,7 +13,33 @@ spring boot spring.jpa.hibernate.ddl-auto will generate all the required tables
 
 1. After setting up the project as per the guidelines below and your application has started, create one sample customer using this POST api `http://localhost:8080/api/customer/add` as each loan 
    will be tied to a particular customer, Please see swagger Api documentation on how to do this.
-2. To create a new loan use this post Api `http://localhost:8080/api/loans/new` and provide a valid customer id
+   
+   sample request   
+   {
+
+   "customerName":"Collins Cheruiyot",
+
+   "customerMobileNo":"0708521498",
+
+   "email":"kelvincollins86@gmail.com",
+
+   "customerStatus":"GOOD"
+
+   }
+2. To create a new loan use this post Api `http://localhost:8080/api/loans/new` and provide a valid customer id. sample request.
+
+   {
+
+   "principalAmount":10000,
+
+   "loanDuration":300,
+
+   "customerId":1,
+
+   "loanType":"monthly"
+
+   }
+ 
 3. to check Projected Fees use this API `http://localhost:8080/api/projected/fees/list?id=1` where id is the loan id
 4. to check loan installment use this GET API `http://localhost:8080/api/loans/installments?id=1` where id is the loan id
 
