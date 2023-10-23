@@ -52,7 +52,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
             projectedFeeRepository.save(projectedFee);
 
         }
-        loanInstallmentMapper(projectedFeesStoreRequest,  7);
+        loanInstallmentMapper(projectedFeesStoreRequest);
 
 
     }
@@ -78,13 +78,12 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
             projectedFeeRepository.save(projectedFee);
 
         }
-        loanInstallmentMapper(projectedFeesStoreRequest,  30);
+        loanInstallmentMapper(projectedFeesStoreRequest);
     }
 
-    private void loanInstallmentMapper(ProjectedFeesStoreRequest projectedFeesStoreRequest,int incurFrequency){
+    private void loanInstallmentMapper(ProjectedFeesStoreRequest projectedFeesStoreRequest){
         List<ProjectedFee> projectedFeeList= projectedFeeRepository.findByLoan(loanRepository.findById(projectedFeesStoreRequest.getLoanId()).get()).get();
         int projectedFeeLength=projectedFeeList.size();
-        System.out.println(projectedFeeLength);
         String[]  installmentDueDate= new String[projectedFeeLength];
         double[]  installmentAmount= new double[projectedFeeLength];
         Loan loan=new Loan();
@@ -92,10 +91,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
             installmentDueDate[i]=projectedFeeList.get(i).getProjectedFeeIncurDate();
             loan= loanRepository.findById(projectedFeesStoreRequest.getLoanId()).get();
             double installment=loan.getPrincipalAmount()/(projectedFeeLength);
-            System.out.println("principalAmount "+loan.getPrincipalAmount());
-            System.out.println(":::::::::::"+(double) loan.getLoanDuration() /incurFrequency);
             installment+=projectedFeeList.get(i).getProjectedServiceFeeAmount()+projectedFeeList.get(i).getProjectedInterestAmount();
-            System.out.println(projectedFeeList.get(i).getProjectedServiceFeeAmount()+projectedFeeList.get(i).getProjectedInterestAmount());
             installmentAmount[i]=installment;
         }
         LoanInstallmentStoreRequest loanInstallment=LoanInstallmentStoreRequest.builder()
