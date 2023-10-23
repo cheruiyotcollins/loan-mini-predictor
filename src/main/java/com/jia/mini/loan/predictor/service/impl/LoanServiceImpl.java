@@ -57,6 +57,7 @@ public class LoanServiceImpl extends Thread implements LoanService  {
     public ResponseEntity<GeneralResponse> addNewLoan(LoanApplicationRequest loanApplicationRequest) {
         generalResponse=new GeneralResponse();
         try {
+            //processing weekly loan
             if (loanApplicationRequest.getLoanType().equalsIgnoreCase(weeklyLoan)) {
 
                 int noOfWeeks = loanApplicationRequest.getLoanDuration() / 7;
@@ -95,14 +96,16 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                         .projectedInterestAmount(weeklyInterest)
                         .projectedServiceFeeAmount(weeklyServiceFeeArray)
                         .build();
-
+            //calling projectedFeeService Class to calculated and store projected fees
                 projectedFeeService.storeWeeklyProjectedFees(projectedFeesStoreRequest);
                 generalResponse.setStatus(HttpStatus.CREATED);
                 generalResponse.setPayload(createdLoan);
                 generalResponse.setDescription("Loan Created Successfully");
                 return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
 
-            } else if (loanApplicationRequest.getLoanType().equalsIgnoreCase(monthlyLoan)) {
+            }
+            //processing monthly loans
+            else if (loanApplicationRequest.getLoanType().equalsIgnoreCase(monthlyLoan)) {
                 int noOfMonths = loanApplicationRequest.getLoanDuration() / 30;
                 int i = 0;
                 int j = 0;
@@ -139,13 +142,14 @@ public class LoanServiceImpl extends Thread implements LoanService  {
                         .projectedInterestAmount(monthlyInterest)
                         .projectedServiceFeeAmount(monthlyServiceFeeArray)
                         .build();
-
+                 //calling projectedFeeService Class to calculated and store projected fees
                 projectedFeeService.storeMonthlyProjectedFees(projectedFeesStoreRequest);
                 generalResponse.setStatus(HttpStatus.CREATED);
                 generalResponse.setPayload(createdLoan);
                 generalResponse.setDescription("Loan Created Successfully");
                 return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
-            } else {
+            } //return invalid loan type for any other loan type
+            else {
                 generalResponse.setStatus(HttpStatus.BAD_REQUEST);
                 generalResponse.setDescription("Invalid Loan Type");
                 return new ResponseEntity<>(generalResponse, generalResponse.getStatus());
@@ -159,6 +163,7 @@ public class LoanServiceImpl extends Thread implements LoanService  {
 
 
     @Override
+    //listing all existing loans
     public ResponseEntity<List<Loan>> getLoans() {
         return new ResponseEntity<>(loanRepository.findAll(), HttpStatus.CREATED);
     }

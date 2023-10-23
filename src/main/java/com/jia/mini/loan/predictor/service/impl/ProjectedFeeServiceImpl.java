@@ -32,6 +32,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
 
 
     @Override
+    //weekly loans projected fees calculation and storage
     public void storeWeeklyProjectedFees(ProjectedFeesStoreRequest projectedFeesStoreRequest) {
         int len= projectedFeesStoreRequest.getProjectedInterestAmount().length;
         int incurDays=0;
@@ -58,6 +59,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
     }
 
     @Override
+    //monthly loans projected fees calculation and storage
     public void storeMonthlyProjectedFees(ProjectedFeesStoreRequest projectedFeesStoreRequest) {
         int len= projectedFeesStoreRequest.getProjectedInterestAmount().length;
         int incurDays=0;
@@ -80,7 +82,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
         }
         loanInstallmentMapper(projectedFeesStoreRequest);
     }
-
+    //custom method for setting up LoanInstallmentDto and calling LoanInstallmentService
     private void loanInstallmentMapper(ProjectedFeesStoreRequest projectedFeesStoreRequest){
         List<ProjectedFee> projectedFeeList= projectedFeeRepository.findByLoan(loanRepository.findById(projectedFeesStoreRequest.getLoanId()).get()).get();
         int projectedFeeLength=projectedFeeList.size();
@@ -104,6 +106,7 @@ public class ProjectedFeeServiceImpl implements ProjectedFeeService {
     }
 
     @Override
+    //getting projected fee by loan id
     public ResponseEntity<GeneralResponse> getProjectedFee(Long id) {
         generalResponse= new GeneralResponse();
         Optional<Loan> loan=loanRepository.findById(id);

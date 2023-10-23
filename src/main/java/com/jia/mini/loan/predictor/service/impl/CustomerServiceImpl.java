@@ -22,6 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerRepository customerRepository;
     GeneralResponse generalResponse;
     @Override
+    //creating new customer
     public ResponseEntity<GeneralResponse> addCustomer(CreateCustomerRequest createCustomerRequest) {
         generalResponse = new GeneralResponse();
         try {
@@ -42,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    //listing all customers
     public ResponseEntity<List<Customer>>getCustomerInfo() {
 
         List<Customer> customerInfo = customerRepository.findAll();

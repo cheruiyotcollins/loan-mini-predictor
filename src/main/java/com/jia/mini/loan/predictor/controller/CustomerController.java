@@ -16,11 +16,13 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     CustomerService customerService;
+    //adding new customer
     @PostMapping("add")
     public ResponseEntity<GeneralResponse> addCustomer(@RequestBody CreateCustomerRequest createCustomerRequest){
 
       return customerService.addCustomer(createCustomerRequest);
     }
+    //retrieving all existing customers
     @GetMapping("list")
     public ResponseEntity<List<Customer>> getCustomerInfoList(){
         return customerService.getCustomerInfo();

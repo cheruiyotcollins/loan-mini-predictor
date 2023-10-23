@@ -25,6 +25,7 @@ public class LoanInstallmentServiceImpl implements LoanInstallmentService {
     GeneralResponse generalResponse;
 
     @Override
+    // Storing payable loan installments
     public void storeLoanInstallment(LoanInstallmentStoreRequest loanInstallmentStoreRequest){
         int len=loanInstallmentStoreRequest.getInstallmentDate().length;
         for(int i=0;i<len;i++){
@@ -39,6 +40,7 @@ public class LoanInstallmentServiceImpl implements LoanInstallmentService {
     }
 
     @Override
+    //getting payable loan installment fee by loan id
     public ResponseEntity<GeneralResponse> getLoanInstallmentByLoanId(Long id) {
         generalResponse=new GeneralResponse();
         Optional<Loan> loan=loanRepository.findById(id);

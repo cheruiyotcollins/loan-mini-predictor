@@ -19,6 +19,7 @@ public class LoanInstallmentController {
     @Autowired
     LoanInstallmentService loanInstallmentService;
 
+    //getting LoanInstallment for a particular loan
      @GetMapping
     public ResponseEntity<GeneralResponse>  getLoanInstallmentByLoanId(@RequestParam Long id){
 

@@ -18,6 +18,7 @@ public class ProjectedFeeController {
    @Autowired
    ProjectedFeeService projectedFeeService;
 
+   //Getting Projected fee for a particular loan
    @GetMapping("list")
    public ResponseEntity<GeneralResponse> getProjectedFee(@RequestParam Long id){
        return projectedFeeService.getProjectedFee(id);

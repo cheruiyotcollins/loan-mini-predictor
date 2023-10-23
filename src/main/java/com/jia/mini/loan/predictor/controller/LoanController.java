@@ -16,11 +16,12 @@ import java.util.List;
 public class LoanController {
     @Autowired
     LoanService loanService;
-
+   //adding new loans
     @PostMapping("new")
         public ResponseEntity<GeneralResponse> loanApplication(@RequestBody LoanApplicationRequest loanApplicationRequest){
             return loanService.addNewLoan(loanApplicationRequest);
         }
+        //retrieving all existing loans
         @GetMapping("list")
         public ResponseEntity<List<Loan>> getLoans(){
         return loanService.getLoans();
