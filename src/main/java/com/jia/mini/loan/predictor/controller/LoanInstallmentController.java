@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value="/api/loans/installments")
+@RequestMapping(value="/jia/loans/installments")
 public class LoanInstallmentController {
     @Autowired
     LoanInstallmentService loanInstallmentService;

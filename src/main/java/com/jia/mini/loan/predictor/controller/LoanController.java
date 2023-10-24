@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/api/loans/")
+@RequestMapping(value="/jia/loans/")
 public class LoanController {
     @Autowired
     LoanService loanService;
    //adding new loans
-    @PostMapping("new")
+    @PostMapping("application")
         public ResponseEntity<ResponseDto> loanApplication(@RequestBody LoanApplicationRequest loanApplicationRequest){
             return loanService.addNewLoan(loanApplicationRequest);
         }

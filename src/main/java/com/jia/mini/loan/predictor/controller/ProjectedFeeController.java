@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value="/api/projected/fees/")
+@RequestMapping(value="/jia/projected/fees/")
 public class ProjectedFeeController {
    @Autowired
    ProjectedFeeService projectedFeeService;

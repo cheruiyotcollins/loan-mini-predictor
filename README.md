@@ -11,7 +11,7 @@ Spring Boot 2.7.17, spring boot H2 database and java 8 has been used
 In this project H2 db have been used, for production please change application.properties to a database of your choice.
 spring boot spring.jpa.hibernate.ddl-auto will generate all the required tables
 
-1. After setting up the project as per the guidelines below and your application has started, create one sample customer using this POST api `http://localhost:8080/api/customer/add` as each loan 
+1. After setting up the project as per the guidelines below and your application has started, create one sample customer using this POST api `http://localhost:9090/jia/customers/register` as each loan 
    will be tied to a particular customer, Please see swagger Api documentation on how to do this.
    
    sample request   
@@ -26,7 +26,7 @@ spring boot spring.jpa.hibernate.ddl-auto will generate all the required tables
    "customerStatus":"GOOD"
 
    }
-2. To create a new loan use this post Api `http://localhost:8080/api/loans/new` and provide a valid customer id. sample request.
+2. To create a new loan use this post Api `http://localhost:9090/jia/loans/application` and provide a valid customer id. sample request.
 
    {
 
@@ -40,8 +40,8 @@ spring boot spring.jpa.hibernate.ddl-auto will generate all the required tables
 
    }
  
-3. to check Projected Fees use this API `http://localhost:8080/api/projected/fees/list?id=1` where id is the loan id
-4. to check loan installment use this GET API `http://localhost:8080/api/loans/installments?id=1` where id is the loan id
+3. to check Projected Fees use this API `http://localhost:9090/jia/projected/fees/list?id=1` where id is the loan id
+4. to check loan installment use this GET API `http://localhost:9090/jia/loans/installments?id=1` where id is the loan id
 
 To get started with this project, you will need to have the following installed on your local machine:
 
@@ -59,9 +59,9 @@ Navigate to the project directory and :
 2. If you are running the application as a standalone jar file, be sure to copy `application.properties` into the same
    location as the jar file and run using command `java -jar jarname.jar &`. & is included to run it on background.
 3. If you are running the project using an IDE or from command line use: `mvn spring-boot:run` .
-4. The application will be available on http://localhost:8080.
+4. The application will be available on http://localhost:9090.
 
 ## Swagger documentation
 
 Make sure the application is up and access it via link the
-endpoint `URI/swagger-ui/index.html i.e http://localhost:8080/swagger-ui/index.html`
+endpoint `URI/swagger-ui/index.html i.e http://localhost:9090/swagger-ui/index.html`
